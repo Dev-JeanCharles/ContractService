@@ -1,4 +1,4 @@
-[![NPM](https://img.shields.io/npm/l/react)](https://github.com/https://github.com/Dev-JeanCharles/ContractService/blob/master/LICENSE) 
+[![NPM](https://img.shields.io/npm/l/react)](https://github.com/Dev-JeanCharles/ContractService/blob/master/LICENSE) 
 # ContractService
 
 ## Sobre a aplicação
@@ -30,6 +30,15 @@
 <strong>- PostgreSQL</strong>
 
 <code><img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/540px-Postgresql_elephant.svg.png"></code>
+
+<strong>- Swagger</strong>
+
+<code><img height="40" src="https://seeklogo.com/images/S/swaggerhub-logo-52BE4455D6-seeklogo.com.png"></code>
+
+<strong>- Spock Framework</strong>
+
+<code><img height="40" src="https://spockframework.org/spock/docs/2.1/images/spock-main-logo.png"></code>
+
 
 ## Arquitetura do serviço
 
