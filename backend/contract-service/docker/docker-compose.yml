@@ -1,44 +1,20 @@
-version: '3.8'
-
-volumes:
-  postgres:
-  pgadmin:
+version: "3.8"
 
 services:
-  postgres:
-    container_name: db_postgres
-    image: 'postgres:latest'
+  postgresdb:
+    image: postgres
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: 123
-      POSTGRES_USER: jean
-    volumes:
-      - ./scripts/postgres:/data/postgres
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "senha_admin"
+      POSTGRES_DB: contract_database
     ports:
-      - '5432'
-    restart: always
-
-  pgadmin:
-    container_name: pgadmin
-    restart: always
-    image: dpage/pgadmin4:latest
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@localhost.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_LISTEN_PORT: 5050
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      - 5432:5432
     volumes:
-      - ./scripts/pgadmin:/var/lib/pgadmin
-      - ./docker_pgadmin_servers.json:/pgadmin4/servers.json
-    ports:
-      - '5050:5050'
-    entrypoint:
-      - "/bin/sh"
-      - "-c"
-      - "/bin/echo 'postgres:5432:*:jean:123' > /tmp/pgpassfile && chmod 600 /tmp/pgpassfile && /entrypoint.sh"
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - postgres-network
 
 networks:
-  default:
-    name: local-network
-    external: true
+  postgres-network:
+    driver: bridge
