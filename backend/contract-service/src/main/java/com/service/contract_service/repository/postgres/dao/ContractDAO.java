@@ -1,8 +1,7 @@
-package repository.postgres.dao;
+package com.service.contract_service.repository.postgres.dao;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import domain.enums.ContractStatusEnum;
+import com.service.contract_service.domain.enums.ContractStatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

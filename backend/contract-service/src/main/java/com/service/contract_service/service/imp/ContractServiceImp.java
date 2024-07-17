@@ -1,13 +1,13 @@
-package service.imp;
+package com.service.contract_service.service.imp;
 
-import application.web.controllers.builder.Builders;
-import application.web.controllers.dto.responses.ContractResponse;
-import domain.model.Contract;
+import com.service.contract_service.application.web.controllers.builder.Builders;
+import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
+import com.service.contract_service.domain.model.Contract;
+import com.service.contract_service.service.ContractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.postgres.ContractRepository;
-import repository.postgres.dao.ContractDAO;
-import service.ContractService;
+import com.service.contract_service.repository.postgres.ContractRepository;
+import com.service.contract_service.repository.postgres.dao.ContractDAO;
 
 @Service
 public class ContractServiceImp implements ContractService {

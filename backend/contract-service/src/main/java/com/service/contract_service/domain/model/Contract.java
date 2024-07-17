@@ -1,9 +1,7 @@
-package domain.model;
+package com.service.contract_service.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import domain.enums.ContractStatusEnum;
-import jakarta.persistence.*;
+import com.service.contract_service.domain.enums.ContractStatusEnum;
 import lombok.*;
 
 import java.time.LocalDateTime;

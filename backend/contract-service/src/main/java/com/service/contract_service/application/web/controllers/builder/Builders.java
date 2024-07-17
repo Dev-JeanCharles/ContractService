@@ -1,9 +1,9 @@
-package application.web.controllers.builder;
+package com.service.contract_service.application.web.controllers.builder;
 
-import application.web.controllers.dto.requesties.ContractRequest;
-import application.web.controllers.dto.responses.ContractResponse;
-import domain.model.Contract;
-import domain.enums.ContractStatusEnum;
+import com.service.contract_service.application.web.controllers.dto.requesties.ContractRequest;
+import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
+import com.service.contract_service.domain.model.Contract;
+import com.service.contract_service.domain.enums.ContractStatusEnum;
 
 import java.time.LocalDateTime;
 

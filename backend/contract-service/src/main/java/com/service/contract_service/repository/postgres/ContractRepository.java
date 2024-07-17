@@ -1,8 +1,8 @@
-package repository.postgres;
+package com.service.contract_service.repository.postgres;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import repository.postgres.dao.ContractDAO;
+import com.service.contract_service.repository.postgres.dao.ContractDAO;
 
 import java.util.UUID;
 

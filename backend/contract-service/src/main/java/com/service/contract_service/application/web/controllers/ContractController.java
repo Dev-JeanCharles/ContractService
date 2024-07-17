@@ -1,8 +1,8 @@
-package application.web.controllers;
+package com.service.contract_service.application.web.controllers;
 
-import application.web.controllers.builder.Builders;
-import application.web.controllers.dto.requesties.ContractRequest;
-import application.web.controllers.dto.responses.ContractResponse;
+import com.service.contract_service.application.web.controllers.builder.Builders;
+import com.service.contract_service.application.web.controllers.dto.requesties.ContractRequest;
+import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import service.ContractService;
+import com.service.contract_service.service.ContractService;
 
 @RestController
 @RequestMapping(value = "/contract")

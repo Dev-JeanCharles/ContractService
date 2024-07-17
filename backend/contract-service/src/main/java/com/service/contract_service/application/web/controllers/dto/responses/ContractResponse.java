@@ -1,4 +1,4 @@
-package application.web.controllers.dto.responses;
+package com.service.contract_service.application.web.controllers.dto.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
