@@ -22,6 +22,7 @@ public class ContractServiceImp implements ContractService {
 
         ContractDAO contractDAO = new ContractDAO();
         Contract contracts = new Contract();
+
         ContractDAO contractSaved = repository.save(assembleObject(contract, contractDAO));
 
         return builders.toContractResponse(assembleContract(contracts, contractSaved));

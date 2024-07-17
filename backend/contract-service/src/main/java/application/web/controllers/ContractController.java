@@ -3,7 +3,6 @@ package application.web.controllers;
 import application.web.controllers.builder.Builders;
 import application.web.controllers.dto.requesties.ContractRequest;
 import application.web.controllers.dto.responses.ContractResponse;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import service.ContractService;
 
 @RestController
-@RequestMapping("/contract")
+@RequestMapping(value = "/contract")
 public class ContractController {
 
     @Autowired

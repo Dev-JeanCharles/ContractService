@@ -26,7 +26,7 @@ public class Builders {
         ContractResponse contractResponse = new ContractResponse();
 
         contractResponse.setNumberContract(contract.getId().toString());
-        contractResponse.setMessage("gravado com sucesso");
+        contractResponse.setMessage("Successfully recorded!");
 
         return contractResponse;
     }
