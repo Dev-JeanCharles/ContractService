@@ -4,10 +4,12 @@ import com.service.contract_service.application.web.controllers.dto.requesties.C
 import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
 import com.service.contract_service.domain.model.Contract;
 import com.service.contract_service.domain.enums.ContractStatusEnum;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-public class Builders {
+@Component
+public class ContractBuilder {
 
     public Contract toContractEntity(ContractRequest contractRequest) {
         Contract contract = new Contract();

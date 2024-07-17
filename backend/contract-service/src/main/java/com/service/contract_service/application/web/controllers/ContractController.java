@@ -1,6 +1,6 @@
 package com.service.contract_service.application.web.controllers;
 
-import com.service.contract_service.application.web.controllers.builder.Builders;
+import com.service.contract_service.application.web.controllers.builder.ContractBuilder;
 import com.service.contract_service.application.web.controllers.dto.requesties.ContractRequest;
 import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
 import org.slf4j.Logger;
@@ -18,20 +18,28 @@ import com.service.contract_service.service.ContractService;
 @RequestMapping(value = "/contract")
 public class ContractController {
 
+    private final ContractService contractService;
+    private static final Logger logger = LoggerFactory.getLogger(ContractController.class);
+    private final ContractBuilder contractBuilder;
+
     @Autowired
-    private ContractService contractService;
-
-    private static final Logger logger = (Logger) LoggerFactory.getLogger(ContractController.class);
-
-    Builders builders = new Builders();
+    public ContractController(ContractService contractService, ContractBuilder contractBuilder) {
+        this.contractService = contractService;
+        this.contractBuilder = contractBuilder;
+    }
 
     @PostMapping
     public ResponseEntity<ContractResponse> createContract(@RequestBody ContractRequest contractRequest) {
-            logger.info("[CREATE-CONTRACT]-[Controller] Starting the contracted data: [{}]", contractRequest);
+        try {
+            logger.info("[CREATE-CONTRACT]-[Controller] Starting contract creation for request: [{}]", contractRequest);
 
-            ContractResponse response = contractService.create(builders.toContractEntity(contractRequest));
-            logger.info("[CREATE-CONTRACT]-[Controller] The hiring process was successfully completed");
+            ContractResponse contractResponse = contractService.create(contractBuilder.toContractEntity(contractRequest));
+            logger.info("[CREATE-CONTRACT]-[Controller] Contract creation completed successfully for request: {}", contractRequest);
 
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+            return new ResponseEntity<>(contractResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("[CREATE-CONTRACT]-[Controller] Error occurred during contract creation for request: {}", contractRequest, e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+}

@@ -1,6 +1,6 @@
 package com.service.contract_service.service.imp;
 
-import com.service.contract_service.application.web.controllers.builder.Builders;
+import com.service.contract_service.application.web.controllers.builder.ContractBuilder;
 import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
 import com.service.contract_service.domain.model.Contract;
 import com.service.contract_service.service.ContractService;
@@ -15,7 +15,7 @@ public class ContractServiceImp implements ContractService {
     @Autowired
     private ContractRepository repository;
 
-    private final Builders builders = new Builders();
+    private final ContractBuilder contractBuilder = new ContractBuilder();
 
     @Override
     public ContractResponse create(Contract contract) {
@@ -25,7 +25,7 @@ public class ContractServiceImp implements ContractService {
 
         ContractDAO contractSaved = repository.save(assembleObject(contract, contractDAO));
 
-        return builders.toContractResponse(assembleContract(contracts, contractSaved));
+        return contractBuilder.toContractResponse(assembleContract(contracts, contractSaved));
     }
 
     private ContractDAO assembleObject(Contract contract, ContractDAO contractDAO) {
