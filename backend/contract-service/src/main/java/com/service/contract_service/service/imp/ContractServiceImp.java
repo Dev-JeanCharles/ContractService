@@ -12,23 +12,28 @@ import com.service.contract_service.repository.postgres.dao.ContractDAO;
 @Service
 public class ContractServiceImp implements ContractService {
 
-    @Autowired
-    private ContractRepository repository;
+    private final ContractRepository repository;
+    private final ContractBuilder contractBuilder;
 
-    private final ContractBuilder contractBuilder = new ContractBuilder();
+    @Autowired
+    public ContractServiceImp(ContractRepository repository, ContractBuilder contractBuilder) {
+        this.repository = repository;
+        this.contractBuilder = contractBuilder;
+    }
 
     @Override
     public ContractResponse create(Contract contract) {
 
-        ContractDAO contractDAO = new ContractDAO();
-        Contract contracts = new Contract();
+        ContractDAO contractDAO = convertToContractDAO(contract);
+        ContractDAO savedContractDAO = repository.save(contractDAO);
 
-        ContractDAO contractSaved = repository.save(assembleObject(contract, contractDAO));
+        Contract savedContract = convertToContract(savedContractDAO);
 
-        return contractBuilder.toContractResponse(assembleContract(contracts, contractSaved));
+        return contractBuilder.toContractResponse(savedContract);
     }
 
-    private ContractDAO assembleObject(Contract contract, ContractDAO contractDAO) {
+    private ContractDAO convertToContractDAO(Contract contract) {
+        ContractDAO contractDAO = new ContractDAO();
 
         contractDAO.setId(contract.getId());
         contractDAO.setPersonId(contract.getPersonId());
@@ -44,7 +49,8 @@ public class ContractServiceImp implements ContractService {
 
     }
 
-    private Contract assembleContract(Contract contract, ContractDAO contractDAO) {
+    private Contract convertToContract(ContractDAO contractDAO) {
+        Contract contract = new Contract();
 
         contract.setId(contractDAO.getId());
         contract.setPersonId(contractDAO.getPersonId());

@@ -12,24 +12,20 @@ import java.time.LocalDateTime;
 public class ContractBuilder {
 
     public Contract toContractEntity(ContractRequest contractRequest) {
-        Contract contract = new Contract();
-
-        contract.setPersonId(contractRequest.getPersonId());
-        contract.setProductId(contractRequest.getProductId());
-        contract.setStatus(ContractStatusEnum.PENDING);
-        contract.setIntegrationPersonPending(false);
-        contract.setIntegrationProductPending(false);
-        contract.setCreatedAt(LocalDateTime.now());
-
-        return contract;
+        return Contract.builder()
+                .personId(contractRequest.getPersonId())
+                .productId(contractRequest.getProductId())
+                .status(ContractStatusEnum.PENDING)
+                .integrationPersonPending(false)
+                .integrationProductPending(false)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
     public ContractResponse toContractResponse(Contract contract) {
-        ContractResponse contractResponse = new ContractResponse();
-
-        contractResponse.setNumberContract(contract.getId().toString());
-        contractResponse.setMessage("Successfully recorded!");
-
-        return contractResponse;
+        return ContractResponse.builder()
+                .numberContract(contract.getId().toString())
+                .message("Successfully recorded!")
+                .build();
     }
 }

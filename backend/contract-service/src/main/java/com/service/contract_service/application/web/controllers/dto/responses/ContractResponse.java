@@ -1,15 +1,13 @@
 package com.service.contract_service.application.web.controllers.dto.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ContractResponse {
     @JsonProperty("number_contract")
     private String numberContract;
