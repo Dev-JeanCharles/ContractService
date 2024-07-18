@@ -2,6 +2,8 @@ package com.service.contract_service.repository.postgres.dao;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.service.contract_service.domain.enums.ContractStatusEnum;
+import com.service.contract_service.repository.imp.ContractIdGeneratorImpl;
+import com.service.contract_service.repository.interfaces.ContractIdGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +11,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Builder
 @Table(name = "tb_contract")
@@ -20,9 +21,8 @@ import java.util.UUID;
 public class ContractDAO {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private UUID id = null;
+    private String id = null;
 
     @Column(name = "person_id", nullable = false)
     private String personId;
@@ -49,4 +49,14 @@ public class ContractDAO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(name = "canceled_at")
     private LocalDateTime cancelamentDat = null;
+
+    @PrePersist
+    public void prePersist() {
+            this.id = generateContractId();
+        }
+
+    private String generateContractId() {
+        ContractIdGenerator generator = new ContractIdGeneratorImpl();
+        return generator.generatedContractId();
+    }
 }

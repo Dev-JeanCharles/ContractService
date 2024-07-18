@@ -1,4 +1,4 @@
-package com.service.contract_service.repository.postgres;
+package com.service.contract_service.repository.interfaces;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

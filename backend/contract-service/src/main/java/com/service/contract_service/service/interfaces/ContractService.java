@@ -1,4 +1,4 @@
-package com.service.contract_service.service;
+package com.service.contract_service.service.interfaces;
 
 import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
 import com.service.contract_service.domain.model.Contract;

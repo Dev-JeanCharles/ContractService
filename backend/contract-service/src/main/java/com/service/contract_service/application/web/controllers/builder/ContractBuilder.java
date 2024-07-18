@@ -24,7 +24,7 @@ public class ContractBuilder {
 
     public ContractResponse toContractResponse(Contract contract) {
         return ContractResponse.builder()
-                .numberContract(contract.getId().toString())
+                .numberContract(contract.getId())
                 .message("Successfully recorded!")
                 .build();
     }

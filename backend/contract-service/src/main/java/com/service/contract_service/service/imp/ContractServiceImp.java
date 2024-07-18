@@ -3,12 +3,12 @@ package com.service.contract_service.service.imp;
 import com.service.contract_service.application.web.controllers.builder.ContractBuilder;
 import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
 import com.service.contract_service.domain.model.Contract;
-import com.service.contract_service.service.ContractService;
+import com.service.contract_service.service.interfaces.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.service.contract_service.repository.postgres.ContractRepository;
+import com.service.contract_service.repository.interfaces.ContractRepository;
 import com.service.contract_service.repository.postgres.dao.ContractDAO;
 
 @Service

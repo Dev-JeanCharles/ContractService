@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 public class Contract {
 
-    private UUID id = null;
+    private String id;
 
     private String personId;
 
