@@ -5,6 +5,7 @@ import com.service.contract_service.domain.enums.ContractStatusEnum;
 import com.service.contract_service.repository.imp.ContractIdGeneratorImpl;
 import com.service.contract_service.repository.interfaces.ContractIdGenerator;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,13 +25,16 @@ public class ContractDAO {
     @Column(name = "id")
     private String id = null;
 
+    @NotNull(message = "person_id cannot be null")
     @Column(name = "person_id", nullable = false)
     private String personId;
 
+    @NotNull(message = "product_id cannot be null")
     @Column(name = "product_id", nullable = false)
     private String productId;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "status cannot be null")
     @Column(name = "status", nullable = false)
     private ContractStatusEnum status;
 

@@ -30,16 +30,16 @@ public class ContractController {
 
     @PostMapping
     public ResponseEntity<ContractResponse> createContract(@RequestBody ContractRequest contractRequest) {
-        try {
-            logger.info("[CREATE-CONTRACT]-[Controller] Starting contract creation for request: [{}]", contractRequest);
+        logger.info("[CREATE-CONTRACT]-[Controller] Starting contract creation for request: [{}]", contractRequest);
 
+        try {
             ContractResponse contractResponse = contractService.create(contractBuilder.toContractEntity(contractRequest));
             logger.info("[CREATE-CONTRACT]-[Controller] Contract creation completed successfully for request: {}", contractRequest);
 
             return new ResponseEntity<>(contractResponse, HttpStatus.CREATED);
         } catch (Exception e) {
-            logger.error("[CREATE-CONTRACT]-[Controller] Error occurred during contract creation for request: {}", contractRequest, e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("[CREATE-CONTRACT]-[Controller] Unexpected error during contract creation: ", e);
+            throw new RuntimeException("Unexpected error occurred during contract creation");
         }
     }
 }
