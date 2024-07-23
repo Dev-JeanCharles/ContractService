@@ -2,8 +2,8 @@ package com.service.contract_service.repository.postgres.dao;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.service.contract_service.domain.enums.ContractStatusEnum;
-import com.service.contract_service.repository.imp.ContractIdGeneratorImpl;
-import com.service.contract_service.repository.interfaces.ContractIdGenerator;
+import com.service.contract_service.repository.imp.GeneratorIdImpl;
+import com.service.contract_service.repository.interfaces.GeneratorId;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -56,11 +56,12 @@ public class ContractDAO {
 
     @PrePersist
     public void prePersist() {
-            this.id = generateContractId();
-        }
+        this.id = generateContractId();
+    }
 
     private String generateContractId() {
-        ContractIdGenerator generator = new ContractIdGeneratorImpl();
+        GeneratorId generator = new GeneratorIdImpl();
         return generator.generatedContractId();
     }
+
 }

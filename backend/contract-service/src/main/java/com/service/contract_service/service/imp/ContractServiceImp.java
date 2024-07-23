@@ -2,7 +2,6 @@ package com.service.contract_service.service.imp;
 
 import com.service.contract_service.application.web.controllers.builder.ContractBuilder;
 import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
-import com.service.contract_service.domain.commons.DatabaseConnectionException;
 import com.service.contract_service.domain.model.Contract;
 import com.service.contract_service.repository.interfaces.ContractRepository;
 import com.service.contract_service.repository.postgres.dao.ContractDAO;
@@ -12,9 +11,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,15 +51,10 @@ public class ContractServiceImp implements ContractService {
             logger.debug("[CREATE-CONTRACT]-[Service] Converted saved ContractDAO to Contract: {}", savedContract);
 
             return contractBuilder.toContractResponse(savedContract);
-        } catch (CannotGetJdbcConnectionException e) {
-            logger.error("[CREATE-CONTRACT]-[Service] Database connection error: ", e);
-            throw new DatabaseConnectionException("Database connection error: " + e.getMessage());
-        } catch (DataAccessResourceFailureException e) {
-            logger.error("[CREATE-CONTRACT]-[Service] Data access resource failure: ", e);
-            throw new DatabaseConnectionException("Data access resource failure: " + e.getMessage());
         } catch (ConstraintViolationException e) {
             logger.error("[CREATE-CONTRACT]-[Service] ConstraintViolationException: ", e);
             throw e;
+
         } catch (DataIntegrityViolationException e) {
             logger.error("[CREATE-CONTRACT]-[Service] DataIntegrityViolationException: ", e);
             throw e;
@@ -83,7 +75,6 @@ public class ContractServiceImp implements ContractService {
         contractDAO.setCancelamentDat(contract.getCancelamentDat());
 
         return contractDAO;
-
     }
 
     private Contract convertToContract(ContractDAO contractDAO) {
@@ -100,7 +91,6 @@ public class ContractServiceImp implements ContractService {
         contract.setCancelamentDat(contractDAO.getCancelamentDat());
 
         return contract;
-
     }
 }
 

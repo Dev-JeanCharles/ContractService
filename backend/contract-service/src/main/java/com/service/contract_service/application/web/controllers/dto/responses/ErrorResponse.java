@@ -1,5 +1,6 @@
 package com.service.contract_service.application.web.controllers.dto.responses;
 
+import com.service.contract_service.application.web.controllers.ErrorField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

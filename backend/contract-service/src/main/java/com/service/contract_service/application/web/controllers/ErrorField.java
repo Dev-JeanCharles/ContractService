@@ -1,4 +1,4 @@
-package com.service.contract_service.application.web.controllers.dto.responses;
+package com.service.contract_service.application.web.controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

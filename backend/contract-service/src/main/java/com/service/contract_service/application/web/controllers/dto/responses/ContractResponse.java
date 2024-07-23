@@ -13,4 +13,5 @@ public class ContractResponse {
     private String numberContract;
 
     private String message;
+
 }

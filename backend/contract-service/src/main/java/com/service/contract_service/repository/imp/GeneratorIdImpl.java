@@ -1,12 +1,12 @@
 package com.service.contract_service.repository.imp;
 
-import com.service.contract_service.repository.interfaces.ContractIdGenerator;
+import com.service.contract_service.repository.interfaces.GeneratorId;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
 @Component
-public class ContractIdGeneratorImpl implements ContractIdGenerator {
+public class GeneratorIdImpl implements GeneratorId {
 
     @Override
     public String generatedContractId() {

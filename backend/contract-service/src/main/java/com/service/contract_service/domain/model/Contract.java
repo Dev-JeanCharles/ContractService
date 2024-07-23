@@ -5,7 +5,6 @@ import com.service.contract_service.domain.enums.ContractStatusEnum;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -33,4 +32,5 @@ public class Contract {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime cancelamentDat = null;
+
 }
