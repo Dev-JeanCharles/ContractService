@@ -38,8 +38,12 @@ public class ContractServiceImp implements ContractService {
         try {
             List<ContractDAO> existingContracts = repository.findByPersonIdAndProductId(contract.getPersonId(), contract.getProductId());
             if (!existingContracts.isEmpty()) {
-                throw new DataIntegrityViolationException("Contract with the same person_id and product_id already exists.");
+                String errorMessage = String.format("Contract with personId '%s' and productId '%s' already exists.",
+                        contract.getPersonId(), contract.getProductId());
+                logger.error("[CREATE-CONTRACT]-[Service] {}", errorMessage);
+                throw new DataIntegrityViolationException(errorMessage);
             }
+
 
             ContractDAO contractDAO = convertToContractDAO(contract);
             logger.debug("[CREATE-CONTRACT]-[Service] ContractDAO created: {}", contractDAO);
