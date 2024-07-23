@@ -15,6 +15,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -22,8 +23,7 @@ import java.util.*;
 public class AuthorizationFilter extends OncePerRequestFilter {
 
     private final String serviceKey;
-    private final List<AntPathRequestMatcher> ignoredPaths;
-
+    private final List<RequestMatcher> ignoredPaths;
     private static final String ROLE_SYSTEM = "ROLE_SYSTEM";
     private static final List<String> IGNORE_AUTH_PATH_LIST = Arrays.asList(
             "/health-check",
@@ -55,8 +55,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         this.ignoredPaths = createIgnoredPaths();
     }
 
-    private List<AntPathRequestMatcher> createIgnoredPaths() {
-        List<AntPathRequestMatcher> matchers = new ArrayList<>();
+    private List<RequestMatcher> createIgnoredPaths() {
+        List<RequestMatcher> matchers = new ArrayList<>();
         for (String path : IGNORE_AUTH_PATH_LIST) {
             matchers.add(new AntPathRequestMatcher(path));
         }
@@ -65,67 +65,63 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response, @NonNull FilterChain filterChain) {
-        if (verifyIgnoreAuthorization(request)) {
-            try {
-                filterChain.doFilter(request, response);
-            } catch (Exception e) {
-                throw new RuntimeException("Error during filter chain processing", e);
-            }
-            return;
-        }
-
-        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.equals(this.serviceKey)) {
-            SecurityContextHolder.getContext().setAuthentication(systemAuthorization());
-        }
-
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setContentType("application/json");
-            try {
-                JsonParserBuilder.defaultObjectMapper()
-                        .registerModule(new JavaTimeModule())
-                        .writeValue(response.getWriter(), buildObject(request, response));
-            } catch (Exception e) {
-                throw new RuntimeException("Error writing response", e);
-            } finally {
-                try {
-                    response.getWriter().flush();
-                } catch (Exception e) {
-                    throw new RuntimeException("Error flushing response writer", e);
-                }
-            }
-            return;
-        }
 
         try {
+            if (shouldIgnoreAuthorization(request)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            if (isAuthorized(request)) {
+                SecurityContextHolder.getContext().setAuthentication(createSystemAuthorization());
+            } else {
+                handleUnauthorized(response, request);
+                return;
+            }
             filterChain.doFilter(request, response);
+
         } catch (Exception e) {
             throw new RuntimeException("Error during filter chain processing", e);
         }
     }
 
-    private Map<String, Object> buildObject(HttpServletRequest req, HttpServletResponse res) {
+    private boolean shouldIgnoreAuthorization(HttpServletRequest request) {
+        return ignoredPaths.stream().anyMatch(matcher -> matcher.matches(request));
+    }
+
+    private boolean isAuthorized(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        return authorizationHeader != null && authorizationHeader.equals(this.serviceKey);
+    }
+
+    private void handleUnauthorized(HttpServletResponse response, HttpServletRequest request) throws IOException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType("application/json");
+        Map<String, Object> errorResponse = buildErrorResponse(request, response);
+        JsonParserBuilder.getObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .writeValue(response.getWriter(), errorResponse);
+        response.getWriter().flush();
+    }
+
+    private Map<String, Object> buildErrorResponse(HttpServletRequest req, HttpServletResponse res) {
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("timestamp", OffsetDateTime.now(ZoneOffset.UTC));
         responseMap.put("status", res.getStatus());
-        responseMap.put("error", HttpStatus.valueOf(res.getStatus()));
+        responseMap.put("error", HttpStatus.valueOf(res.getStatus()).getReasonPhrase());
         responseMap.put("path", req.getRequestURI());
         return responseMap;
     }
 
-    private boolean verifyIgnoreAuthorization(HttpServletRequest request) {
-        return ignoredPaths.stream().anyMatch(matcher -> matcher.matches(request));
-    }
-
-    private PreAuthenticatedAuthenticationToken systemAuthorization() {
+    private PreAuthenticatedAuthenticationToken createSystemAuthorization() {
         return new PreAuthenticatedAuthenticationToken(
                 this.serviceKey,
                 null,
                 Collections.singletonList((GrantedAuthority) () -> ROLE_SYSTEM)
         );
     }
-    public RequestMatcher[] getIgnoreAuthorizationPathList() {
+
+    public RequestMatcher[] getIgnoredPaths() {
         return ignoredPaths.toArray(new RequestMatcher[0]);
     }
 }

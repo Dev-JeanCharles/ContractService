@@ -9,8 +9,6 @@ import com.service.contract_service.service.interfaces.ContractService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -37,15 +35,7 @@ public class ContractServiceImp implements ContractService {
         log.info("[CREATE-CONTRACT]-[Service] Creating a new contract with personId: {}", contract.getPersonId());
 
         try {
-            List<ContractDAO> existingContracts = repository.findByPersonIdAndProductId(contract.getPersonId(), contract.getProductId());
-            if (!existingContracts.isEmpty()) {
-                String errorMessage = String.format("Contract with personId '%s' and productId '%s' already exists.",
-                        contract.getPersonId(), contract.getProductId());
-                log.error("[CREATE-CONTRACT]-[Service] {}", errorMessage);
-                throw new DataIntegrityViolationException(errorMessage);
-            }
-
-
+            verifyExistingContractsEquals(contract);
             ContractDAO contractDAO = convertToContractDAO(contract);
             log.debug("[CREATE-CONTRACT]-[Service] ContractDAO created: {}", contractDAO);
 
@@ -96,6 +86,24 @@ public class ContractServiceImp implements ContractService {
         contract.setCancelamentDat(contractDAO.getCancelamentDat());
 
         return contract;
+    }
+
+    private void verifyExistingContractsEquals(Contract contract) {
+        List<ContractDAO> existingServicesId = repository.findByPersonIdAndProductId(contract.getPersonId(), contract.getProductId());
+        List<ContractDAO> existingContractId = repository.findById(contract.getId());
+
+        if (!existingServicesId.isEmpty()) {
+            String errorMessage = String.format("Contract with personId '%s' and productId '%s' already exists.",
+                    contract.getPersonId(), contract.getProductId());
+            log.error("[CREATE-CONTRACT]-[Service] {}", errorMessage);
+            throw new DataIntegrityViolationException(errorMessage);
+        }
+        if (!existingContractId.isEmpty()) {
+            String errorMessage = String.format("Contract with id '%s' already exist.",
+                    contract.getId());
+            log.error("[CREATE-CONTRACT]-[Service] {}", errorMessage);
+            throw new DataIntegrityViolationException(errorMessage);
+        }
     }
 }
 

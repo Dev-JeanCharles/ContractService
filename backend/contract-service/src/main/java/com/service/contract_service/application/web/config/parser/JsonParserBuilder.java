@@ -16,26 +16,24 @@ import java.time.format.DateTimeFormatter;
 
 public class JsonParserBuilder {
 
-    private static final ObjectMapper DEFAULT_OBJECT_MAPPER = createDefaultObjectMapper();
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    private static final ObjectMapper INSTANCE = createDefaultObjectMapper();
 
     private JsonParserBuilder() {
     }
 
-    public static ObjectMapper defaultObjectMapper() {
-        return DEFAULT_OBJECT_MAPPER;
+    public static ObjectMapper getObjectMapper() {
+        return INSTANCE;
     }
 
+    /**
+     * Provides a default configured ObjectMapper.
+     * @return A configured ObjectMapper instance.
+     */
     private static ObjectMapper createDefaultObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper()
-                .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE) // Use PropertyNamingStrategies
-                .registerModule(new JavaTimeModule()); // Register JavaTimeModule
-
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(format));
-        javaTimeModule.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(format));
-        objectMapper.registerModule(javaTimeModule);
+                .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+                .registerModule(createJavaTimeModule());
 
         return objectMapper
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -43,5 +41,12 @@ public class JsonParserBuilder {
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .setDateFormat(new StdDateFormat());
+    }
+
+    private static JavaTimeModule createJavaTimeModule() {
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DATE_TIME_FORMAT));
+        javaTimeModule.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DATE_TIME_FORMAT));
+        return javaTimeModule;
     }
 }

@@ -1,4 +1,4 @@
-package com.service.contract_service.application.web.controllers.handlers;
+package com.service.contract_service.application.web.handlers;
 
 import com.service.contract_service.application.web.controllers.ErrorField;
 import com.service.contract_service.application.web.controllers.dto.responses.ErrorResponse;
