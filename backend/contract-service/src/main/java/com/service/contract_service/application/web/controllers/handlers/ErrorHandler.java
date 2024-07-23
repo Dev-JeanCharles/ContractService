@@ -2,11 +2,13 @@ package com.service.contract_service.application.web.controllers.handlers;
 
 import com.service.contract_service.application.web.controllers.ErrorField;
 import com.service.contract_service.application.web.controllers.dto.responses.ErrorResponse;
+import com.service.contract_service.domain.commons.PersonServiceIntegrationException;
 import com.service.contract_service.domain.commons.UnauthorizationException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -57,4 +59,23 @@ public class ErrorHandler {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(PersonServiceIntegrationException.class)
+    public ResponseEntity<ErrorResponse> handlePersonServiceIntegrationException(PersonServiceIntegrationException ex) {
+        logger.error("[EXCEPTION]-[ErrorHandler] PersonServiceIntegrationException: ", ex);
+
+        List<ErrorField> errorFields = List.of(new ErrorField("error", ex.getMessage()));
+        ErrorResponse errorResponse = new ErrorResponse("Person service integration error", errorFields);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(ChangeSetPersister.NotFoundException ex) {
+        logger.error("[EXCEPTION]-[ErrorHandler] NotFoundException: ", ex);
+
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), List.of(new ErrorField("error", ex.getMessage())));
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
 }
