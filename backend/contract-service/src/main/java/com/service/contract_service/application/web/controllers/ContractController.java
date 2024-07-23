@@ -3,6 +3,7 @@ package com.service.contract_service.application.web.controllers;
 import com.service.contract_service.application.web.controllers.builder.ContractBuilder;
 import com.service.contract_service.application.web.controllers.dto.requesties.ContractRequest;
 import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
+import com.service.contract_service.domain.commons.UnauthorizationException;
 import com.service.contract_service.domain.model.Contract;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -46,6 +47,9 @@ public class ContractController {
             return new ResponseEntity<>(contractResponse, HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
             logger.error("[CREATE-CONTRACT]-[Controller] DataIntegrityViolationException: ", e);
+            throw e;
+        } catch (UnauthorizationException e) {
+            logger.error("[CREATE-CONTRACT]-[Controller] UnauthorizationException: ", e);
             throw e;
         }
     }

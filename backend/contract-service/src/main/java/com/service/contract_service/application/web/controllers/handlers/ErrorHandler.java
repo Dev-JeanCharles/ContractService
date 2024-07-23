@@ -51,8 +51,10 @@ public class ErrorHandler {
     @ExceptionHandler(UnauthorizationException.class)
     public ResponseEntity<ErrorResponse> handleUnauthorizationException(UnauthorizationException ex) {
         logger.error("[EXCEPTION]-[ErrorHandler] UnauthorizationException: ", ex);
-        ErrorResponse errorResponse = new ErrorResponse("Unauthorized access", List.of(new ErrorField("error", ex.getMessage())));
+
+        List<ErrorField> errorFields = List.of(new ErrorField("error", ex.getMessage()));
+        ErrorResponse errorResponse = new ErrorResponse("Unauthorized access", errorFields);
+
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
-
 }

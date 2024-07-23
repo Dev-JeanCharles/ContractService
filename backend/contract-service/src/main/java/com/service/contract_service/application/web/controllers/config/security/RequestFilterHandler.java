@@ -32,7 +32,7 @@ public class RequestFilterHandler extends OncePerRequestFilter {
     private static final String ERROR = "error";
     private static final String MESSAGE = "message";
     private static final String PATH = "path";
-    private static final String CORRELATION_HEADER_NAME = "X-Correlation-ID"; // Defina o nome do cabeçalho de correlação
+    private static final String CORRELATION_HEADER_NAME = "X-Correlation-ID";
 
     private final ObjectMapper mapper;
 
