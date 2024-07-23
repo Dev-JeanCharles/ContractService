@@ -13,15 +13,10 @@ import java.time.LocalDateTime;
 public class Contract {
 
     private String id;
-
     private String personId;
-
     private String productId;
-
     private ContractStatusEnum status;
-
     private Boolean integrationPersonPending;
-
     private Boolean integrationProductPending;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
