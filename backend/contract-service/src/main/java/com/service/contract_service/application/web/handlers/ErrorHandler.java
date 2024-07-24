@@ -5,6 +5,7 @@ import com.service.contract_service.application.web.controllers.dto.responses.Er
 import com.service.contract_service.domain.commons.PersonServiceIntegrationException;
 import com.service.contract_service.domain.commons.UnauthorizationException;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @ControllerAdvice
 public class ErrorHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(ErrorHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
@@ -35,7 +36,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        logger.error("[EXCEPTION]-[ErrorHandler] DataIntegrityViolationException: ", ex);
+        log.error("[EXCEPTION]-[ErrorHandler] DataIntegrityViolationException: ", ex);
         ErrorResponse errorResponse = new ErrorResponse("Data integrity violation", List.of(new ErrorField("data", ex.getMessage())));
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
@@ -52,7 +53,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(UnauthorizationException.class)
     public ResponseEntity<ErrorResponse> handleUnauthorizationException(UnauthorizationException ex) {
-        logger.error("[EXCEPTION]-[ErrorHandler] UnauthorizationException: ", ex);
+        log.error("[EXCEPTION]-[ErrorHandler] UnauthorizationException: ", ex);
 
         List<ErrorField> errorFields = List.of(new ErrorField("error", ex.getMessage()));
         ErrorResponse errorResponse = new ErrorResponse("Unauthorized access", errorFields);
@@ -62,7 +63,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(PersonServiceIntegrationException.class)
     public ResponseEntity<ErrorResponse> handlePersonServiceIntegrationException(PersonServiceIntegrationException ex) {
-        logger.error("[EXCEPTION]-[ErrorHandler] PersonServiceIntegrationException: ", ex);
+        log.error("[EXCEPTION]-[ErrorHandler] PersonServiceIntegrationException: ", ex);
 
         List<ErrorField> errorFields = List.of(new ErrorField("error", ex.getMessage()));
         ErrorResponse errorResponse = new ErrorResponse("Person service integration error", errorFields);
@@ -72,7 +73,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(ChangeSetPersister.NotFoundException ex) {
-        logger.error("[EXCEPTION]-[ErrorHandler] NotFoundException: ", ex);
+        log.error("[EXCEPTION]-[ErrorHandler] NotFoundException: ", ex);
 
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), List.of(new ErrorField("error", ex.getMessage())));
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);

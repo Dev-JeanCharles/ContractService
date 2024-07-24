@@ -7,6 +7,7 @@ import com.service.person_service.domain.model.Person;
 import com.service.person_service.service.imp.PersonServiceImp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,10 +33,15 @@ public class PersonController {
     public ResponseEntity<PersonResponse> createPerson(@RequestBody PersonRequest request) {
         log.info("[CREATE-PERSON]-[Controller] Starting person creation for request: [{}]", request);
 
-        Person person = personBuilder.toBuilderEntity(request);
-        PersonResponse response = personService.create(person);
-        log.info("[CREATE-PERSON]-[Controller] Person creation completed successfully for request: {}", request);
+        try {
+            Person person = personBuilder.toBuilderEntity(request);
+            PersonResponse response = personService.create(person);
+            log.info("[CREATE-PERSON]-[Controller] Person creation completed successfully for request: {}", request);
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }catch (DataIntegrityViolationException e) {
+            log.error("[CREATE-PERSON]-[Controller] DataIntegrityViolationException: ", e);
+            throw e;
+        }
     }
 }
