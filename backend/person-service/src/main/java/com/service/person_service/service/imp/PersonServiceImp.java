@@ -7,6 +7,7 @@ import com.service.person_service.repository.postgres.adapter.PersonAdapter;
 import com.service.person_service.repository.postgres.adapter.PersonDAO;
 import com.service.person_service.repository.postgres.interfaces.PersonRepository;
 import com.service.person_service.service.interfaces.PersonService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +26,12 @@ public class PersonServiceImp implements PersonService {
     }
 
     @Override
-    public PersonResponse create(Person person) {
+    public PersonResponse create(@Valid Person person) {
+        log.info("[CREATE-PERSON]-[Service] Creating a new person with personId: {}", person.getPersonId());
+
         PersonDAO personDAO = adapter.convertToPersonDAO(person);
         PersonDAO savedPersonDAO = repository.save(personDAO);
+        log.info("[CREATE-PERSON]-[Postgres] Person saved in the database with id: {}", savedPersonDAO.getPersonId());
 
         return personBuilder.toPersonResponse(adapter.convertToPerson(savedPersonDAO));
     }

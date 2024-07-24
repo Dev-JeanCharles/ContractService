@@ -12,7 +12,6 @@ public class PersonResponse {
     @JsonProperty("person_id")
     private String personId;
 
-    @JsonProperty("created_at")
     private String message;
 }
 
