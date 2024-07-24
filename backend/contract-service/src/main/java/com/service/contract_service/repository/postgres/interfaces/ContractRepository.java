@@ -1,8 +1,8 @@
-package com.service.contract_service.repository.interfaces;
+package com.service.contract_service.repository.postgres.interfaces;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.service.contract_service.repository.postgres.dao.ContractDAO;
+import com.service.contract_service.repository.postgres.adapter.ContractDAO;
 
 import java.util.List;
 

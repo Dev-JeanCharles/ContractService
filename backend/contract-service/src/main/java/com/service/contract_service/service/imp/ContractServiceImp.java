@@ -2,17 +2,24 @@ package com.service.contract_service.service.imp;
 
 import com.service.contract_service.application.web.controllers.builder.ContractBuilder;
 import com.service.contract_service.application.web.controllers.dto.responses.ContractResponse;
+import com.service.contract_service.domain.enums.ContractStatusEnum;
 import com.service.contract_service.domain.model.Contract;
-import com.service.contract_service.repository.interfaces.ContractRepository;
-import com.service.contract_service.repository.postgres.dao.ContractDAO;
+import com.service.contract_service.infrastructure.gateways.imp.PersonServiceImp;
+import com.service.contract_service.infrastructure.gateways.person.dto.PersonResponseData;
+import com.service.contract_service.repository.postgres.adapter.ContractAdapter;
+import com.service.contract_service.repository.postgres.interfaces.ContractRepository;
+import com.service.contract_service.repository.postgres.adapter.ContractDAO;
 import com.service.contract_service.service.interfaces.ContractService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -22,12 +29,16 @@ public class ContractServiceImp implements ContractService {
 
     private final ContractRepository repository;
     private final ContractBuilder contractBuilder;
+    private final PersonServiceImp personService;
+    private final ContractAdapter adapter;
 
 
     @Autowired
-    public ContractServiceImp(ContractRepository repository, ContractBuilder contractBuilder) {
+    public ContractServiceImp(ContractRepository repository, ContractBuilder contractBuilder, PersonServiceImp personService, ContractAdapter adapter) {
         this.repository = repository;
         this.contractBuilder = contractBuilder;
+        this.personService = personService;
+        this.adapter = adapter;
     }
 
     @Override
@@ -36,16 +47,18 @@ public class ContractServiceImp implements ContractService {
 
         try {
             verifyExistingContractsEquals(contract);
-            ContractDAO contractDAO = convertToContractDAO(contract);
-            log.debug("[CREATE-CONTRACT]-[Service] ContractDAO created: {}", contractDAO);
+            PersonResponseData person = personService.getPersonById(contract.getPersonId());
+            log.info("[CREATE-CONTRACT]-[Gateway] Successfully completed integration with service-person, data: {}", person);
 
+            ContractDAO contractDAO = adapter.convertToContractDAO(contract);
             ContractDAO savedContractDAO = repository.save(contractDAO);
-            log.info("[CREATE-CONTRACT]-[Service] Contract saved with id: {}", savedContractDAO.getId());
+            log.info("[CREATE-CONTRACT]-[Postgres] Contract saved in the database with id: {} and status: {}", savedContractDAO.getId(), savedContractDAO.getStatus());
 
-            Contract savedContract = convertToContract(savedContractDAO);
-            log.debug("[CREATE-CONTRACT]-[Service] Converted saved ContractDAO to Contract: {}", savedContract);
+            ContractDAO updatedContract = contractDocumentByPerson(savedContractDAO, person);
+            ContractDAO finalContract = repository.save(updatedContract);
+            log.info("[CREATE-CONTRACT]-[Postgres] Contract and Person saved in the database with id: {}", finalContract.getId());
 
-            return contractBuilder.toContractResponse(savedContract);
+            return contractBuilder.toContractResponse(adapter.convertToContract(finalContract));
         } catch (ConstraintViolationException e) {
             log.error("[CREATE-CONTRACT]-[Service] ConstraintViolationException: ", e);
             throw e;
@@ -53,39 +66,23 @@ public class ContractServiceImp implements ContractService {
         } catch (DataIntegrityViolationException e) {
             log.error("[CREATE-CONTRACT]-[Service] DataIntegrityViolationException: ", e);
             throw e;
+        } catch (ChangeSetPersister.NotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private ContractDAO convertToContractDAO(Contract contract) {
-        ContractDAO contractDAO = new ContractDAO();
+    private ContractDAO contractDocumentByPerson(ContractDAO contractDAO, PersonResponseData person) {
+        ContractDAO personSaved = new ContractDAO();
 
-        contractDAO.setId((contract.getId()));
-        contractDAO.setPersonId(contract.getPersonId());
-        contractDAO.setProductId(contract.getProductId());
-        contractDAO.setStatus(contract.getStatus());
-        contractDAO.setIntegrationPersonPending(contract.getIntegrationPersonPending());
-        contractDAO.setIntegrationProductPending(contract.getIntegrationProductPending());
-        contractDAO.setCreatedAt(contract.getCreatedAt());
-        contractDAO.setUpdatedAt(contract.getUpdatedAt());
-        contractDAO.setCancelamentDat(contract.getCancelamentDat());
+        contractDAO.setIntegrationPersonPending(false);
+        contractDAO.setStatus(ContractStatusEnum.ACTIVE);
+        contractDAO.setFullNamePerson(person.getFirstName().concat(person.getLastName()));
+        contractDAO.setGenderPerson(person.getGender());
+        contractDAO.setCpfPerson(person.getCpf());
+        contractDAO.setBirthdayAtPerson(person.getBirthdayAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        contractDAO.setUpdatedAt(LocalDateTime.now());
 
-        return contractDAO;
-    }
-
-    private Contract convertToContract(ContractDAO contractDAO) {
-        Contract contract = new Contract();
-
-        contract.setId((contractDAO.getId()));
-        contract.setPersonId(contractDAO.getPersonId());
-        contract.setProductId(contractDAO.getProductId());
-        contract.setStatus(contractDAO.getStatus());
-        contract.setIntegrationPersonPending(contractDAO.getIntegrationPersonPending());
-        contract.setIntegrationProductPending(contractDAO.getIntegrationProductPending());
-        contract.setCreatedAt(contractDAO.getCreatedAt());
-        contract.setUpdatedAt(contractDAO.getUpdatedAt());
-        contract.setCancelamentDat(contractDAO.getCancelamentDat());
-
-        return contract;
+        return personSaved;
     }
 
     private void verifyExistingContractsEquals(Contract contract) {

@@ -1,6 +1,6 @@
-package com.service.contract_service.repository.imp;
+package com.service.contract_service.repository.postgres.imp;
 
-import com.service.contract_service.repository.interfaces.GeneratorId;
+import com.service.contract_service.repository.postgres.interfaces.GeneratorId;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
