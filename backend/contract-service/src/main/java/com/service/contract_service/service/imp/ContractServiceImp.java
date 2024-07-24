@@ -23,7 +23,6 @@ import java.util.List;
 @Slf4j
 public class ContractServiceImp implements ContractService {
 
-
     private final ContractRepository repository;
     private final ContractBuilder contractBuilder;
     private final PersonServiceImp personService;
