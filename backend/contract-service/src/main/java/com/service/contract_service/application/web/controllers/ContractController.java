@@ -23,7 +23,7 @@ import com.service.contract_service.service.interfaces.ContractService;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/contract")
+@RequestMapping("/contract")
 public class ContractController {
 
     private final ContractService contractService;

@@ -16,7 +16,7 @@ public class ContractBuilder {
                 .personId(contractRequest.getPersonId())
                 .productId(contractRequest.getProductId())
                 .status(ContractStatusEnum.PENDING)
-                .integrationPersonPending(false)
+                .integrationPersonPending(true)
                 .integrationProductPending(false)
                 .createdAt(LocalDateTime.now())
                 .build();
