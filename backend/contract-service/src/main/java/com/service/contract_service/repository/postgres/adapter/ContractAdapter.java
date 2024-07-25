@@ -48,13 +48,13 @@ public class ContractAdapter {
 
         String fullName = (person.getFirstName() != null ? person.getFirstName() : "") +
                 (person.getLastName() != null ? " " + person.getLastName() : "");
-        contractDAO.setFullNamePerson(fullName.trim()); // Ensure no leading/trailing spaces
+        contractDAO.setFullNamePerson(fullName.trim());
 
         contractDAO.setGenderPerson(person.getGender() != null ? person.getGender() : "Unknown");
 
         contractDAO.setCpfPerson(person.getCpf() != null ? person.getCpf() : "Not provided");
 
-        String birthdayAt = (person.getBirthdayAt() != null) ? person.getBirthdayAt().toString() : "Not provided";
+        String birthdayAt = (person.getBirthdayAt() != null) ? person.getBirthdayAt() : "Not provided";
         contractDAO.setBirthdayAtPerson(birthdayAt);
 
         contractDAO.setNameProduct(null);

@@ -46,6 +46,11 @@ public class PersonServiceImp implements PersonService {
         }
     }
 
+    @Override
+    public PersonDAO findPersonById(String personId) {
+        return repository.findById(personId).orElse(null);
+    }
+
     private void verifyExistingPersonEquals(Person person) {
         List<PersonDAO> existingPersonId = repository.findByPersonId(person.getPersonId());
         List<PersonDAO> existingCpf = repository.findByCpf(person.getCpf());

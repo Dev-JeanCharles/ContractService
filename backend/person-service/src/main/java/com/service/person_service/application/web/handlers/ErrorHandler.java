@@ -2,6 +2,7 @@ package com.service.person_service.application.web.handlers;
 
 import com.service.person_service.application.web.controllers.ErrorField;
 import com.service.person_service.application.web.dto.responses.ErrorResponse;
+import com.service.person_service.domain.commons.PersonNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -33,5 +34,12 @@ public class ErrorHandler {
         log.error("[EXCEPTION]-[ErrorHandler] DataIntegrityViolationException: ", ex);
         ErrorResponse errorResponse = new ErrorResponse("Data integrity violation", List.of(new ErrorField("data", ex.getMessage())));
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler(PersonNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlePersonNotFoundException(PersonNotFoundException ex) {
+        log.error("[EXCEPTION]-[ErrorHandler] PersonNotFoundException: ", ex);
+        ErrorResponse errorResponse = new ErrorResponse("Person Not Found Exception", List.of(new ErrorField("person", ex.getMessage())));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 }

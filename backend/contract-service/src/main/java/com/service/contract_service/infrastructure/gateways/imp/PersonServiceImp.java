@@ -30,6 +30,8 @@ public class PersonServiceImp implements PersonService {
 
             PersonResponseData personResponse = gateway.getPersonById(personId);
 
+            log.info("Received response from Person Service: {}", personResponse);
+
             if (personResponse == null) {
                 log.error("[CREATE-CONTRACT]-[Gateway] No client exists with this personId: {}", personId);
                 throw new ChangeSetPersister.NotFoundException();

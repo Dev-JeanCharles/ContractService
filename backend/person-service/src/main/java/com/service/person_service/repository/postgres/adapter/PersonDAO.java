@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.service.person_service.repository.postgres.imp.GeneratorIdImp;
 import com.service.person_service.repository.postgres.interfaces.GeneratorId;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class PersonDAO {
 
     @Id
     @Column(name = "person_id")
-    private String personId = generatePersonId();
+    private String personId;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
