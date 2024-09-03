@@ -7,7 +7,7 @@
 > em um software que realiza requisições como <strong>Postman</strong> e retornar um response em JSON com todos os dados desse cliente.
 
 ## Ferramentas utilizadas
-<strong>- Spring Boot 3</strong>
+<strong>- Spring Boot </strong>
 
 <code><img height="40" src="https://cdn.freebiesupply.com/logos/large/2x/spring-3-logo-png-transparent.png"></code>
 
